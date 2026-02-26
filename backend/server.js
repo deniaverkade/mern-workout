@@ -1,5 +1,7 @@
 // Importeer Express
 import express from 'express';
+//Importeer mongoose
+import mongoose from 'mongoose';
 
 //Importeer workoutRoutes.js
 import workoutRoutes from "./src/routes/workoutRoutes.js";
@@ -18,25 +20,25 @@ app.use('/api/workouts', workoutRoutes);
 
 // Test route
 app.get('/', (req, res) => {
-    res.json({
-        message: 'Mijn eerste backend!',
-        success: true
-    });
+  res.json({
+    message: 'Mijn eerste backend!',
+    success: true
+  });
 });
 
 // GET alle workouts
 app.get('/api/workouts', (req, res) => {
-    res.json({
-        message: 'Alle workouts',
-        data: []  // Later echte data
-    });
+  res.json({
+    message: 'Alle workouts',
+    data: []  // Later echte data
+  });
 });
 
 // GET één workout
 app.get('/api/workouts/:id', (req, res) => {
   const { id } = req.params;
-  
-  res.json({ 
+
+  res.json({
     message: `Workout ${id}`,
     id: id
   });
@@ -45,8 +47,8 @@ app.get('/api/workouts/:id', (req, res) => {
 // POST nieuwe workout
 app.post('/api/workouts', (req, res) => {
   const { title, reps, load } = req.body;
-  
-  res.json({ 
+
+  res.json({
     message: 'Workout aangemaakt',
     data: { title, reps, load }
   });
@@ -55,8 +57,8 @@ app.post('/api/workouts', (req, res) => {
 // PATCH workout
 app.patch('/api/workouts/:id', (req, res) => {
   const { id } = req.params;
-  
-  res.json({ 
+
+  res.json({
     message: `Workout ${id} aangepast`,
     updates: req.body
   });
@@ -65,14 +67,22 @@ app.patch('/api/workouts/:id', (req, res) => {
 // DELETE workout
 app.delete('/api/workouts/:id', (req, res) => {
   const { id } = req.params;
-  
-  res.json({ 
+
+  res.json({
     message: `Workout ${id} verwijderd`
   });
 });
 
+// Verbind met MongoDB en start server
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('Verbonden met MongoDB');
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server draait op http://localhost:${PORT}`);
-});
+    // Start server ALLEEN als database gelukt is
+    app.listen(PORT, () => {
+      console.log(`Server draait op http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Database verbinding mislukt:', error.message);
+  });
