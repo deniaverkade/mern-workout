@@ -7,6 +7,10 @@ import cors from 'cors';
 
 //Importeer workoutRoutes.js
 import workoutRoutes from "./src/routes/workoutRoutes.js";
+
+//import auth
+import authRoutes from './src/routes/authRoutes.js';
+
 // Maak Express app
 const app = express();
 
@@ -23,6 +27,7 @@ app.use(cors({
 
 // Routes
 app.use('/api/workouts', workoutRoutes);
+app.use('/api/auth', authRoutes);
 
 
 // Test route
